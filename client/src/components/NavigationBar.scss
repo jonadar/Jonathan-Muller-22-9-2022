@@ -1,0 +1,23 @@
+.navigation-bar {
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: rgb(72, 122, 129);
+    color: white;
+    .navigation-bar-title {
+        display: inline-block;
+        font-size: 2rem;
+        margin-right: auto;
+    }
+    .navigation-bar-item {
+        font-size: 1.4rem;
+        text-decoration: none;
+    }
+    a.navigation-bar-item {
+        color: white;
+        &:hover {
+            background-color: red;
+        }
+    }
+}

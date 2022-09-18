@@ -1,0 +1,1 @@
+export type NavigationObject = Array<{ path: string, name: string }>

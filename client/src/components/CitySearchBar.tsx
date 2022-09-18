@@ -1,7 +1,6 @@
+import { FC } from "react";
 
-
-
-export const CitySearchBar = () => {
+export const CitySearchBar: FC = () => {
     return (
         <div className="autocomplete-container">
             {/* turn off default auto complete */}
