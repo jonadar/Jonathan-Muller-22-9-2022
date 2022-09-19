@@ -13,11 +13,18 @@
     .navigation-bar-item {
         font-size: 1.4rem;
         text-decoration: none;
+        height: 100%;
+        margin: 0 10px;
+    }
+    span.navigation-bar-item {
+        text-decoration: underline;
+        font-weight: bold;
+        cursor: default;
     }
     a.navigation-bar-item {
         color: white;
         &:hover {
-            background-color: red;
+            text-decoration: underline;
         }
     }
 }
