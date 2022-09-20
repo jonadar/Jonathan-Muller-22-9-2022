@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 import { FavoritesPage } from "./pages/favorites-page/FavoritesPage";
@@ -7,9 +7,7 @@ import { NavigationBar } from "./components/NavigationBar";
 
 import "./App.scss";
 
-
-
-const App = () => {
+const App: FC = () => {
 	return (
 		<div className="App">
 			<Router basename="/">

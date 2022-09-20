@@ -5,7 +5,7 @@ import "./FavoritesPage.scss";
 export const FavoritesPage: FC = () => {
     return (
         <div>
-            <h1>Favorites</h1>
+            TODO: make weather cards here for each favorite city
         </div>
     );
 };

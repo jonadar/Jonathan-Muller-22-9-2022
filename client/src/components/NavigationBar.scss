@@ -3,26 +3,31 @@
     display: flex;
     align-items: center;
     padding: 20px;
-    background-color: rgb(72, 122, 129);
+    background-color: #487981;
     color: white;
+
     .navigation-bar-title {
         display: inline-block;
         font-size: 2rem;
         margin-right: auto;
     }
+
     .navigation-bar-item {
         font-size: 1.4rem;
         text-decoration: none;
         height: 100%;
         margin: 0 10px;
     }
+
     span.navigation-bar-item {
         text-decoration: underline;
         font-weight: bold;
         cursor: default;
     }
+
     a.navigation-bar-item {
         color: white;
+
         &:hover {
             text-decoration: underline;
         }
