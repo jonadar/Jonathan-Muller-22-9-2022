@@ -1,10 +1,13 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './index.css';
 import { StyledEngineProvider } from '@mui/material';
 
+import App from './App';
+import store from './redux/store';
+import reportWebVitals from './reportWebVitals';
+
+import './index.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,7 +16,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </StyledEngineProvider>
   </React.StrictMode>
 );

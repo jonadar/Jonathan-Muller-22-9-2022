@@ -1,13 +1,21 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { TextField, Autocomplete } from '@mui/material';
+import { useDispatch, useSelector } from "react-redux";
+
 
 import { AutocompleteData, CityWeatherData, CityWeatherForcastData, DailyForcasts } from "../../consts/types";
+import { weekdays } from "../../consts/consts";
 import { data_v1 } from "../../data/autocomplete";
+import { addToFavorites, removeFromFavorites } from "../../redux/stores/favorites";
+
 
 import "./MainPage.scss";
+import { RootState } from "../../redux/store";
 
 const selected: AutocompleteData = {
     "Version": 1,
@@ -55,6 +63,8 @@ const _cityData: CityWeatherData = {
 }
 
 const _cityForcastWeather: CityWeatherForcastData = {
+    "LocalizedName": "Tel Aviv",
+    "Key": "215854",
     "Headline": {
         "EffectiveDate": "2022-09-24T08:00:00+03:00",
         "EffectiveEpochDate": 1663995600,
@@ -230,7 +240,16 @@ export const MainPage: FC = () => {
     const [autocompleteData, setAutocompleteData] = useState<AutocompleteData[]>([]);
     const [selectedCity, setSelectedCity] = useState<AutocompleteData | null>(selected);
     const [fetchingCityData, setFetchingCityData] = useState<boolean>(false);
-    const [cityWeatherData, setCityWeatherData] = useState(_cityForcastWeather);
+    const [cityWeatherData, setCityWeatherData] = useState<CityWeatherForcastData>(_cityForcastWeather);
+
+    const dispatch = useDispatch();
+
+    const favoriteCities = useSelector((state: RootState) => state.favoritesSlice.favoriteCities);
+
+    useEffect(() => {
+        console.log('favoriteCities: ', favoriteCities);
+    }, [favoriteCities]);
+
 
     useEffect(() => {
         setAutocompleteData(data_v1)
@@ -265,7 +284,10 @@ export const MainPage: FC = () => {
                     setFetchingCityData(true);
                     // const { data } = await axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${selectedCity.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
 
-                    const { data } = await axios.get(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${selectedCity.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
+                    const { data } = await axios.get<CityWeatherForcastData>(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${selectedCity.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
+                    //city doesnt come with request, but we want data to stay together
+                    data.LocalizedName = selectedCity.LocalizedName;
+                    data.Key = selectedCity.Key;
                     console.log('data: ', data);
                     setCityWeatherData(data);
                     setFetchingCityData(false);
@@ -275,6 +297,20 @@ export const MainPage: FC = () => {
             }
         }
     }
+
+    const handleClickFavorite = () => {
+        if (favorite) {
+            dispatch(removeFromFavorites({ Key: cityWeatherData.Key }));
+        } else {
+            if (cityWeatherData) {
+                dispatch(addToFavorites({ LocalizedName: cityWeatherData.LocalizedName, Key: cityWeatherData.Key }));
+            }
+        }
+    }
+
+    const favorite: boolean = useMemo(() => {
+        return favoriteCities.findIndex((item) => item.Key === cityWeatherData.Key) !== -1;
+    }, [cityWeatherData, favoriteCities]);
 
     return (
         <div className="main-page-container">
@@ -317,12 +353,39 @@ export const MainPage: FC = () => {
                 </Button>
             </div>
 
-            <div className="main-page-weather-container">
-                {cityWeatherData &&
-                    <div>
-                        TODO: make weather card here
-                    </div>}
-            </div>
+            {cityWeatherData &&
+                <div className="main-page-weather-container">
+                    {/* TODO: make weather card here */}
+                    <div className="top">
+                        <img src={`https://www.accuweather.com//images/weathericons/${cityWeatherData.DailyForecasts[0].Day.Icon}.svg`} alt="" />
+                        <div>
+                            <span>{cityWeatherData.LocalizedName}</span>
+                            <span>{cityWeatherData.DailyForecasts[0].Temperature.Maximum.Value}°{cityWeatherData.DailyForecasts[0].Temperature.Maximum.Unit}</span>
+                        </div>
+
+                        <span className="icon-container">
+                            <IconButton onClick={handleClickFavorite}>
+                                {favorite ? <FavoriteIcon /> : < FavoriteBorderIcon />}
+                            </IconButton>
+                        </span>
+                    </div>
+                    <div className="mid">
+                        <h1>
+                            {cityWeatherData.Headline.Text}
+                        </h1>
+                    </div>
+                    <div className="bottom">
+                        {cityWeatherData.DailyForecasts.map(forcast => {
+                            return (
+                                <span className="weather-card">
+                                    <span>{weekdays[new Date(forcast.Date).getDay()]}</span>
+                                    <span>{forcast.Temperature.Maximum.Value}°{forcast.Temperature.Maximum.Unit}</span>
+                                </span>
+                            );
+                        })}
+                    </div>
+
+                </div>}
         </div >
     );
 };

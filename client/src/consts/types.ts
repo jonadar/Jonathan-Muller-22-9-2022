@@ -36,6 +36,8 @@ export type CityWeatherData = {
 
 
 export type CityWeatherForcastData = {
+    LocalizedName: string,
+    Key: string,
     Headline: {
         EffectiveDate: string,
         EffectiveEpochDate: number,
