@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { localStorageKey } from '../../consts/consts';
 
 
 export type CityEntry = { LocalizedName: string, Key: string };
 
+const initialStateFromStorage = localStorage.getItem(localStorageKey);
+
 const initialState: {
     favoriteCities: CityEntry[]
 } = {
-    favoriteCities: [],
+    favoriteCities: initialStateFromStorage ? JSON.parse(initialStateFromStorage) : [],
 }
 
-const favorites = createSlice({
-    name: 'counter',
+const favoritesSlice = createSlice({
+    name: 'favoritesSlice',
     initialState,
     reducers: {
         addToFavorites(state, { payload }: PayloadAction<CityEntry>) {
@@ -19,10 +22,13 @@ const favorites = createSlice({
             }
         },
         removeFromFavorites(state, { payload }: PayloadAction<{ Key: string }>) {
-            state.favoriteCities = state.favoriteCities.filter(item => item.Key !== payload.Key)
+            state.favoriteCities = state.favoriteCities.filter(item => item.Key !== payload.Key);
+        },
+        replaceAllFavorites(state, { payload }: PayloadAction<CityEntry[]>) {
+            state.favoriteCities = payload;
         }
     },
 })
 
-export const { addToFavorites, removeFromFavorites } = favorites.actions
-export default favorites.reducer
+export const { addToFavorites, removeFromFavorites } = favoritesSlice.actions
+export default favoritesSlice.reducer

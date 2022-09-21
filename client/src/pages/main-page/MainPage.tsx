@@ -6,255 +6,39 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { TextField, Autocomplete } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from 'react-toastify';
 
 
-import { AutocompleteData, CityWeatherData, CityWeatherForcastData, DailyForcasts } from "../../consts/types";
-import { weekdays } from "../../consts/consts";
-import { data_v1 } from "../../data/autocomplete";
+import { AutocompleteData, CityWeatherData, CityWeatherForcastData } from "../../consts/types";
+import { localStorageKey, weekdays } from "../../consts/consts";
 import { addToFavorites, removeFromFavorites } from "../../redux/stores/favorites";
 
 
 import "./MainPage.scss";
 import { RootState } from "../../redux/store";
-
-const selected: AutocompleteData = {
-    "Version": 1,
-    "Key": "215854",
-    "Type": "City",
-    "Rank": 31,
-    "LocalizedName": "Tel Aviv",
-    "Country": {
-        "ID": "IL",
-        "LocalizedName": "Israel"
-    },
-    "AdministrativeArea": {
-        "ID": "TA",
-        "LocalizedName": "Tel Aviv"
-    }
-}
-
-const _cityData: CityWeatherData = {
-    "LocalObservationDateTime": "2022-09-20T20:00:00+08:00",
-    "EpochTime": 1663675200,
-    "WeatherText": "Overcast",
-    "WeatherIcon": 7,
-    "HasPrecipitation": false,
-    "PrecipitationType": null,
-    "LocalSource": {
-        "Id": 7,
-        "Name": "Huafeng",
-        "WeatherCode": "02"
-    },
-    "IsDayTime": false,
-    "Temperature": {
-        "Metric": {
-            "Value": 28.9,
-            "Unit": "C",
-            "UnitType": 17
-        },
-        "Imperial": {
-            "Value": 84,
-            "Unit": "F",
-            "UnitType": 18
-        }
-    },
-    "MobileLink": "http://www.accuweather.com/en/cn/tongren/58491/current-weather/58491?lang=en-us",
-    "Link": "http://www.accuweather.com/en/cn/tongren/58491/current-weather/58491?lang=en-us"
-}
-
-const _cityForcastWeather: CityWeatherForcastData = {
-    "LocalizedName": "Tel Aviv",
-    "Key": "215854",
-    "Headline": {
-        "EffectiveDate": "2022-09-24T08:00:00+03:00",
-        "EffectiveEpochDate": 1663995600,
-        "Severity": 4,
-        "Text": "Pleasant this weekend",
-        "Category": "mild",
-        "EndDate": null,
-        "EndEpochDate": null,
-        "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?lang=en-us",
-        "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?lang=en-us"
-    },
-    "DailyForecasts": [
-        {
-            "Date": "2022-09-20T07:00:00+03:00",
-            "EpochDate": 1663646400,
-            "Temperature": {
-                "Minimum": {
-                    "Value": 68,
-                    "Unit": "F",
-                    "UnitType": 18
-                },
-                "Maximum": {
-                    "Value": 84,
-                    "Unit": "F",
-                    "UnitType": 18
-                }
-            },
-            "Day": {
-                "Icon": 3,
-                "IconPhrase": "Partly sunny",
-                "HasPrecipitation": false
-            },
-            "Night": {
-                "Icon": 34,
-                "IconPhrase": "Mostly clear",
-                "HasPrecipitation": false
-            },
-            "Sources": [
-                "AccuWeather"
-            ],
-            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=1&lang=en-us",
-            "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=1&lang=en-us"
-        },
-        {
-            "Date": "2022-09-21T07:00:00+03:00",
-            "EpochDate": 1663732800,
-            "Temperature": {
-                "Minimum": {
-                    "Value": 68,
-                    "Unit": "F",
-                    "UnitType": 18
-                },
-                "Maximum": {
-                    "Value": 83,
-                    "Unit": "F",
-                    "UnitType": 18
-                }
-            },
-            "Day": {
-                "Icon": 4,
-                "IconPhrase": "Intermittent clouds",
-                "HasPrecipitation": false
-            },
-            "Night": {
-                "Icon": 34,
-                "IconPhrase": "Mostly clear",
-                "HasPrecipitation": false
-            },
-            "Sources": [
-                "AccuWeather"
-            ],
-            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=2&lang=en-us",
-            "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=2&lang=en-us"
-        },
-        {
-            "Date": "2022-09-22T07:00:00+03:00",
-            "EpochDate": 1663819200,
-            "Temperature": {
-                "Minimum": {
-                    "Value": 69,
-                    "Unit": "F",
-                    "UnitType": 18
-                },
-                "Maximum": {
-                    "Value": 84,
-                    "Unit": "F",
-                    "UnitType": 18
-                }
-            },
-            "Day": {
-                "Icon": 1,
-                "IconPhrase": "Sunny",
-                "HasPrecipitation": false
-            },
-            "Night": {
-                "Icon": 33,
-                "IconPhrase": "Clear",
-                "HasPrecipitation": false
-            },
-            "Sources": [
-                "AccuWeather"
-            ],
-            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=3&lang=en-us",
-            "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=3&lang=en-us"
-        },
-        {
-            "Date": "2022-09-23T07:00:00+03:00",
-            "EpochDate": 1663905600,
-            "Temperature": {
-                "Minimum": {
-                    "Value": 68,
-                    "Unit": "F",
-                    "UnitType": 18
-                },
-                "Maximum": {
-                    "Value": 84,
-                    "Unit": "F",
-                    "UnitType": 18
-                }
-            },
-            "Day": {
-                "Icon": 1,
-                "IconPhrase": "Sunny",
-                "HasPrecipitation": false
-            },
-            "Night": {
-                "Icon": 34,
-                "IconPhrase": "Mostly clear",
-                "HasPrecipitation": false
-            },
-            "Sources": [
-                "AccuWeather"
-            ],
-            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=4&lang=en-us",
-            "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=4&lang=en-us"
-        },
-        {
-            "Date": "2022-09-24T07:00:00+03:00",
-            "EpochDate": 1663992000,
-            "Temperature": {
-                "Minimum": {
-                    "Value": 65,
-                    "Unit": "F",
-                    "UnitType": 18
-                },
-                "Maximum": {
-                    "Value": 81,
-                    "Unit": "F",
-                    "UnitType": 18
-                }
-            },
-            "Day": {
-                "Icon": 2,
-                "IconPhrase": "Mostly sunny",
-                "HasPrecipitation": false
-            },
-            "Night": {
-                "Icon": 33,
-                "IconPhrase": "Clear",
-                "HasPrecipitation": false
-            },
-            "Sources": [
-                "AccuWeather"
-            ],
-            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=5&lang=en-us",
-            "Link": "http://www.accuweather.com/en/il/tel-aviv/215854/daily-weather-forecast/215854?day=5&lang=en-us"
-        }
-    ]
-}
+import { Card } from "../../components/Card";
+import { setSelectedCity } from "../../redux/stores/selected";
 
 export const MainPage: FC = () => {
-    const [searchText, setSearchText] = useState<string>("");
     const [autocompleteData, setAutocompleteData] = useState<AutocompleteData[]>([]);
-    const [selectedCity, setSelectedCity] = useState<AutocompleteData | null>(selected);
+    // const [selectedCity, setSelectedCity] = useState<AutocompleteData>();
     const [fetchingCityData, setFetchingCityData] = useState<boolean>(false);
-    const [cityWeatherData, setCityWeatherData] = useState<CityWeatherForcastData>(_cityForcastWeather);
+    const [cityWeatherData, setCityWeatherData] = useState<CityWeatherForcastData>();
 
     const dispatch = useDispatch();
 
     const favoriteCities = useSelector((state: RootState) => state.favoritesSlice.favoriteCities);
+    const selectedCity = useSelector((state: RootState) => state.selectedSlice.selected);
+    const [searchText, setSearchText] = useState<string>(selectedCity.LocalizedName);
 
+    //TODO: try middleware instead
     useEffect(() => {
-        console.log('favoriteCities: ', favoriteCities);
+        localStorage.setItem(localStorageKey, JSON.stringify(favoriteCities));
     }, [favoriteCities]);
 
-
     useEffect(() => {
-        setAutocompleteData(data_v1)
+        handleSearchCityWeather();
     }, []);
-
 
     useEffect(() => {
         console.log(selectedCity);
@@ -264,14 +48,13 @@ export const MainPage: FC = () => {
         setSearchText(inputValue);
 
         if (inputValue.length > 0) {
-            console.log('send', inputValue);
             try {
                 const { data } = await axios.get<AutocompleteData[]>(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${process.env.REACT_APP_API_KEY}&q=${inputValue}`);
 
+                console.log('handleAutocompleteOnChange data: ', data);
                 setAutocompleteData(data);
-                console.log('data: ', data);
             } catch (e) {
-                console.log('e: ', e);
+                console.error('e: ', e);
             }
         }
     }
@@ -282,24 +65,27 @@ export const MainPage: FC = () => {
             try {
                 if (!fetchingCityData) {
                     setFetchingCityData(true);
-                    // const { data } = await axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${selectedCity.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
 
                     const { data } = await axios.get<CityWeatherForcastData>(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${selectedCity.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
+
                     //city doesnt come with request, but we want data to stay together
                     data.LocalizedName = selectedCity.LocalizedName;
                     data.Key = selectedCity.Key;
-                    console.log('data: ', data);
+
+                    console.log('handleSearchCityWeather data: ', data);
                     setCityWeatherData(data);
                     setFetchingCityData(false);
                 }
             } catch (e) {
-                console.log('e: ', e);
+                console.error('e: ', e);
+                setFetchingCityData(false);
+                toast.error("api requests exceeded maximum")
             }
         }
     }
 
     const handleClickFavorite = () => {
-        if (favorite) {
+        if (favorite && cityWeatherData) {
             dispatch(removeFromFavorites({ Key: cityWeatherData.Key }));
         } else {
             if (cityWeatherData) {
@@ -309,7 +95,7 @@ export const MainPage: FC = () => {
     }
 
     const favorite: boolean = useMemo(() => {
-        return favoriteCities.findIndex((item) => item.Key === cityWeatherData.Key) !== -1;
+        return favoriteCities.findIndex((item) => item.Key === cityWeatherData?.Key) !== -1;
     }, [cityWeatherData, favoriteCities]);
 
     return (
@@ -334,7 +120,8 @@ export const MainPage: FC = () => {
                         }}
                         onChange={(_, value) => {
                             if (value && typeof value !== "string") {
-                                setSelectedCity(value);
+                                // setSelectedCity(value);
+                                dispatch(setSelectedCity(value));
                                 console.log('selected value: ', value);
                             } else {
                                 //popup alert "please select item from list"
@@ -355,7 +142,6 @@ export const MainPage: FC = () => {
 
             {cityWeatherData &&
                 <div className="main-page-weather-container">
-                    {/* TODO: make weather card here */}
                     <div className="top">
                         <img src={`https://www.accuweather.com//images/weathericons/${cityWeatherData.DailyForecasts[0].Day.Icon}.svg`} alt="" />
                         <div>
@@ -377,10 +163,10 @@ export const MainPage: FC = () => {
                     <div className="bottom">
                         {cityWeatherData.DailyForecasts.map(forcast => {
                             return (
-                                <span className="weather-card">
+                                <Card className="weather-card" key={forcast.Date}>
                                     <span>{weekdays[new Date(forcast.Date).getDay()]}</span>
                                     <span>{forcast.Temperature.Maximum.Value}°{forcast.Temperature.Maximum.Unit}</span>
-                                </span>
+                                </Card>
                             );
                         })}
                     </div>

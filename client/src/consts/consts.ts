@@ -20,3 +20,5 @@ export const weekdays: { [index: number]: string } = {
     5: "Fri",
     6: "Sat",
 }
+
+export const localStorageKey: string = "favoriteCities";

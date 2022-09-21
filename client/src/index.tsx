@@ -8,6 +8,16 @@ import store from './redux/store';
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
+import axios from 'axios';
+
+axios.interceptors.request.use(
+  config => {
+    if (config && config.headers) {
+      config.headers["Access-Control-Allow-Origin"] = "*";
+    }
+    return config
+  }
+)
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

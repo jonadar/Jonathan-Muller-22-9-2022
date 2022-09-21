@@ -1,19 +1,28 @@
 import { FC } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { FavoriteCityCard } from "../../components/FavoriteCityCard";
 
 import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 import "./FavoritesPage.scss";
+import { SelectedCity, setSelectedCity } from "../../redux/stores/selected";
 
 export const FavoritesPage: FC = () => {
+    const dispatch = useDispatch();
     const favoriteCities = useSelector((state: RootState) => state.favoritesSlice.favoriteCities);
+
+    const navigate = useNavigate();
+
+    const onClickFavorite = (value: SelectedCity): void => {
+        dispatch(setSelectedCity(value))
+        navigate("/");
+    }
     return (
-        <div>
+        <div className="favorite-page-container">
             {favoriteCities.map(item => {
                 return (
-                    <div key={item.Key}>
-                        {item.LocalizedName}
-                    </div>
+                    <FavoriteCityCard cityData={item} key={item.Key} onClick={() => { onClickFavorite(item) }} />
                 )
             })}
 
