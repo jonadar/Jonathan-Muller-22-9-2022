@@ -46,7 +46,7 @@ export const MainPage: FC = () => {
 
         if (inputValue.length > 0) {
             try {
-                const { data } = await axios.get<AutocompleteData[]>(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${process.env.REACT_APP_API_KEY}&q=${inputValue}`);
+                const { data } = await axios.get<AutocompleteData[]>(`https://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${process.env.REACT_APP_API_KEY}&q=${inputValue}`);
 
                 console.log('handleAutocompleteOnChange data: ', data);
                 setAutocompleteData(data);
@@ -63,7 +63,7 @@ export const MainPage: FC = () => {
                 if (!fetchingCityData) {
                     setFetchingCityData(true);
 
-                    const { data } = await axios.get<CityWeatherForcastData>(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${selectedCity.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
+                    const { data } = await axios.get<CityWeatherForcastData>(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${selectedCity.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
 
                     //city doesnt come with request, but we want data to stay together
                     data.LocalizedName = selectedCity.LocalizedName;

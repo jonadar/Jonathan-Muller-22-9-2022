@@ -19,7 +19,7 @@ export const FavoriteCityCard: FC<Props> = ({ cityData, onClick }) => {
 
     const fetchCityWeatherData = async () => {
         try {
-            const { data } = await axios.get<CityWeatherData[]>(`http://dataservice.accuweather.com/currentconditions/v1/${cityData.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
+            const { data } = await axios.get<CityWeatherData[]>(`https://dataservice.accuweather.com/currentconditions/v1/${cityData.Key}?apikey=${process.env.REACT_APP_API_KEY}`);
             console.log(`fetchCityWeatherData for city: ${cityData.LocalizedName}`, data);
             setCityWeatherData(data.length > 0 ? data[0] : undefined);
         } catch (e) {
