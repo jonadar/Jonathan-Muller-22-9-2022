@@ -12,16 +12,14 @@ import { toast } from 'react-toastify';
 import { AutocompleteData, CityWeatherData, CityWeatherForcastData } from "../../consts/types";
 import { localStorageKey, weekdays } from "../../consts/consts";
 import { addToFavorites, removeFromFavorites } from "../../redux/stores/favorites";
-
-
-import "./MainPage.scss";
 import { RootState } from "../../redux/store";
 import { Card } from "../../components/Card";
 import { setSelectedCity } from "../../redux/stores/selected";
 
+import "./MainPage.scss";
+
 export const MainPage: FC = () => {
     const [autocompleteData, setAutocompleteData] = useState<AutocompleteData[]>([]);
-    // const [selectedCity, setSelectedCity] = useState<AutocompleteData>();
     const [fetchingCityData, setFetchingCityData] = useState<boolean>(false);
     const [cityWeatherData, setCityWeatherData] = useState<CityWeatherForcastData>();
 
@@ -31,7 +29,6 @@ export const MainPage: FC = () => {
     const selectedCity = useSelector((state: RootState) => state.selectedSlice.selected);
     const [searchText, setSearchText] = useState<string>(selectedCity.LocalizedName);
 
-    //TODO: try middleware instead
     useEffect(() => {
         localStorage.setItem(localStorageKey, JSON.stringify(favoriteCities));
     }, [favoriteCities]);
